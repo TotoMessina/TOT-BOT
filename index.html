@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖TOT-BOT🤖</title>
+    <meta name="description" content="Hablá con 🤖TOT-BOT🤖, un asistente online que responde rápido, en español y con un toque de humor. ¡Probalo gratis!">
+    <meta name="keywords" content="chat online, asistente inteligente, bot gracioso, chat en español, IA gratuita">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="🤖TOT-BOT🤖 - El chat más simpático de la web">
+    <meta property="og:description" content="Conversá con TOT-BOT, un asistente divertido que responde todo en español.">
+    <meta property="og:image" content="https://www.ejemplo.com/imagen-nico.png">
+    <meta property="og:url" content="https://www.ejemplo.com/chat-nico">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="/favicon.ico" />
+    <style>
+        :root {
+            --bg: #fefefe;
+            --text: #1e1e1e;
+            --bot-bg: #c8fcd0;
+            --user-bg: #d0e9ff;
+            --input-bg: #fff;
+            --border: #ccc;
+        }
+
+        body.dark {
+            --bg: #1f1f1f;
+            --text: #f1f1f1;
+            --bot-bg: #29432c;
+            --user-bg: #274c61;
+            --input-bg: #333;
+            --border: #444;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: grid;
+            place-content: center;
+            height: 100dvh;
+            margin: 0;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        #bot-name {
+            text-align: center;
+            font-size: 1rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #4f46e5; /* violeta azulado */
+        }
+
+        main {
+            width: 100%;
+            max-width: 480px;
+            height: 70vh;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            padding: 12px;
+            margin-bottom: 24px;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        ul {
+            display: flex;
+            flex-direction: column;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .message {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin: 6px 0;
+            padding: 6px 0;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .message span {
+            width: 36px;
+            height: 36px;
+            background: var(--border);
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+        }
+
+        .message p {
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin-top: 4px;
+            font-size: 14px;
+            line-height: 1.4;
+            max-width: 90%;
+            word-wrap: break-word;
+        }
+
+        .message.user {
+            align-self: flex-end;
+            align-items: flex-end;
+        }
+
+        .message.user span,
+        .message.user p {
+            background: var(--user-bg);
+        }
+
+        .message.bot {
+            align-self: flex-start;
+        }
+
+        .message.bot span,
+        .message.bot p {
+            background: var(--bot-bg);
+        }
+
+        .message.bot p {
+            position: relative;
+        }
+
+        .message.bot p::before {
+            content: "";
+            position: absolute;
+            left: -8px;
+            top: 10px;
+            width: 0;
+            height: 0;
+            border-top: 6px solid transparent;
+            border-bottom: 6px solid transparent;
+            border-right: 8px solid var(--bot-bg);
+        }
+
+        .message.user p::before {
+            content: "";
+            position: absolute;
+            right: -8px;
+            top: 10px;
+            width: 0;
+            height: 0;
+            border-top: 6px solid transparent;
+            border-bottom: 6px solid transparent;
+            border-left: 8px solid var(--user-bg);
+        }
+
+        form {
+            display: flex;
+            padding: 0 4px;
+        }
+
+        form input {
+            border-radius: 9999px;
+            flex-grow: 1;
+            border: 1px solid var(--border);
+            padding: 10px 14px;
+            margin-right: 8px;
+            font-size: 14px;
+            background: var(--input-bg);
+            color: var(--text);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        form input:focus {
+            border-color: #09f;
+        }
+
+        form button {
+            background: #09f;
+            border: none;
+            color: white;
+            border-radius: 9999px;
+            cursor: pointer;
+            padding: 10px 16px;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+
+        form button:disabled {
+            background: #ccc;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        form button:hover:not(:disabled) {
+            background: rgb(0, 104, 173);
+        }
+
+        #theme-toggle {
+            position: fixed;
+            top: 12px;
+            right: 12px;
+            padding: 8px 12px;
+            background: var(--user-bg);
+            color: white;
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 18px;
+            padding: 0;
+        }
+
+        small {
+            font-size: 11px;
+            color: var(--text);
+            position: fixed;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            margin: auto;
+            width: 400px;
+            text-align: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+    <script type="module">
+        import { CreateMLCEngine } from "https://esm.run/@mlc-ai/web-llm"
+
+        const $ = el => document.querySelector(el)
+
+        const $form = $('form')
+        const $input = $('input')
+        const $template = $('#message-template')
+        const $messages = $('ul')
+        const $container = $('main')
+        const $button = $('button')
+        const $info = $('small')
+
+        let messages = []
+
+        const SELECTED_MODEL = 'Phi-3.5-mini-instruct-q4f16_1-MLC-1k'
+
+        const engine = await CreateMLCEngine(
+            SELECTED_MODEL,
+            {
+                initProgressCallback: (info) => {
+                    $info.textContent = `${info.text}%`
+                    if (info.progress === 1) {
+                        $button.removeAttribute('disabled')
+                    }
+                }
+            }
+        )
+
+        $form.addEventListener('submit', async(event)=> {
+            event.preventDefault()
+            const messageText = $input.value.trim()
+
+            if (messageText !== ''){
+                $input.value = ''
+            }
+
+            addMessage(messageText, 'user')
+            $button.setAttribute('disabled', '')
+
+            const userMessage = {
+                role: 'user',
+                content: `Tu nombre es Tot-Bot, hablas 100% en español pero entendes ingles, considerando que sos un asistente útil pero con un toque gracioso, como si fueras un amigo simpático que hace chistes de vez en cuando. Sé breve, directo, pero agregá humor donde se pueda: ${messageText}`
+            }
+
+            messages.push(userMessage)
+
+            const chunks = await engine.chat.completions.create({
+                messages,
+                stream: true
+            })
+
+            let reply = ""
+
+            const $botMessage = addMessage("", 'bot')
+
+            for await (const chunk of chunks) {
+                const [choice] = chunk.choices
+                const content = choice.delta.content ?? ""
+                reply += content
+                $botMessage.textContent = reply
+                console.log(chunk.choices)
+            }
+
+            $button.removeAttribute('disabled')
+            messages.push({
+                role: 'assistant',
+                content: reply
+            })
+        })
+
+        function addMessage(text, sender){
+            const clonedTemplate = $template.content.cloneNode(true)
+            const $newMessage = clonedTemplate.querySelector('.message')
+
+            const $who = $newMessage.querySelector('span')
+            const $text = $newMessage.querySelector('p')
+
+            $text.textContent = text
+            $who.textContent = sender === 'bot' ? '🤖': '🧑'
+            $newMessage.classList.add(sender)
+
+            $messages.appendChild($newMessage)
+
+            $container.scrollTop = $container.scrollHeight
+
+            return $text
+        }
+    </script>
+</head>
+<body>
+    <h1 id="bot-name">🤖TOT-BOT🤖</h1>
+    <main>
+        <ul></ul>
+    </main>
+
+    <form>
+        <input placeholder="Escribí tu mensaje acá..." autofocus>
+        <button disabled>Enviar</button>
+    </form>
+
+    <small>&nbsp;</small>
+
+    <template id="message-template">
+        <li class="message">
+            <span></span>
+            <p></p>
+        </li>
+    </template>
+    <button id="theme-toggle">🌗</button>
+    <script>
+    const toggleBtn = document.getElementById('theme-toggle');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const savedTheme = localStorage.getItem('theme');
+
+    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+        document.body.classList.add('dark');
+    }
+
+    toggleBtn.addEventListener('click', () => {
+        document.body.classList.toggle('dark');
+        const newTheme = document.body.classList.contains('dark') ? 'dark' : 'light';
+        localStorage.setItem('theme', newTheme);
+    });
+    </script>
+</body>
+</html>
